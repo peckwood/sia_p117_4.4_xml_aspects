@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+	
+	<context:component-scan base-package="concert.pass_parameters"></context:component-scan>
+	<bean id="blankDisc" class="concert.pass_parameters.BlankDisc">
+		<constructor-arg index="0" value="titl1"></constructor-arg>
+		<constructor-arg index="1" value="artist1"></constructor-arg>
+		<constructor-arg index="2">
+			<list>
+				<value>track1</value>
+				<value>track2</value>
+				<value>track3</value>
+			</list>
+		</constructor-arg>
+	</bean>
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+	<aop:config>
+		<!-- <aop:advisor advice-ref="" pointcut-ref="perform" /> -->
+		<aop:pointcut expression="execution (** concert.pass_parameters.CompactDisc.playTrack(int)) and args(trackNumber)" id="playTrack"/>
+		<aop:aspect ref="trackCounter" >
+			<aop:after-returning pointcut-ref="playTrack" method="countTrack" arg-names="trackNumber"/>
+		</aop:aspect>
+	</aop:config>
+</beans>
